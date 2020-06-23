@@ -1,6 +1,6 @@
 FROM cgdoc/mingw-w64-libs:1.0 AS MINGW_LIBS
 
-FROM cgdoc/mingw-w64-multilib:latest AS builder
+FROM cgdoc/mingw-w64-multilib:posix-v1.0 AS builder
 
 
 ENV BUILD=x86_64-unknown-linux-gnu
@@ -21,7 +21,7 @@ ENV NM $MINGW32-nm
 
 ENV SRC=/opt/_src/
 
-ARG MKVTOOLNIX_VER=46.0.0
+ARG MKVTOOLNIX_VER=47.0.0
 
 
 RUN yum install -y libxslt docbook-style-xsl \
@@ -63,7 +63,7 @@ ARG LDFLAGS="${LDFLAGS} -L${MINGW32_SEARCH_PATH}/lib"
 ARG DEP_PKGS_PATH=/opt/mingw32/_pkgs/
 
 COPY --from=MINGW_LIBS \
-	${MINGW32_SEARCH_PATH}/packages/boost_1_73_0.$ARCH.tar.xz \
+	${MINGW32_SEARCH_PATH}/packages/boost_1_60_0.$ARCH.tar.xz \
 	${MINGW32_SEARCH_PATH}/packages/libogg-1.3.4.$ARCH.tar.xz \
 	${MINGW32_SEARCH_PATH}/packages/libvorbis-1.3.6.$ARCH.tar.xz \
 	${MINGW32_SEARCH_PATH}/packages/zlib-1.2.11.$ARCH.tar.xz \
@@ -100,7 +100,7 @@ ARG CXXFLAGS="-m64"
 ARG LDFLAGS="-m64"
 
 ARG WINDRES_FLAGS="-F pe-x86-64"
-ARG DLLTOOL_FLAGS="-m x86-64"
+ARG DLLTOOL_FLAGS="-m i386:x86-64"
 
 ENV WINDRES "${MINGW32}-windres ${WINDRES_FLAGS}"
 ENV RC $WINDRES
@@ -117,7 +117,7 @@ ARG LDFLAGS="${LDFLAGS} -L${MINGW32_SEARCH_PATH}/lib"
 ARG DEP_PKGS_PATH=/opt/mingw32/_pkgs/
 
 COPY --from=MINGW_LIBS \
-	${MINGW32_SEARCH_PATH}/packages/boost_1_73_0.$ARCH.tar.xz \
+	${MINGW32_SEARCH_PATH}/packages/boost_1_60_0.$ARCH.tar.xz \
 	${MINGW32_SEARCH_PATH}/packages/libogg-1.3.4.$ARCH.tar.xz \
 	${MINGW32_SEARCH_PATH}/packages/libvorbis-1.3.6.$ARCH.tar.xz \
 	${MINGW32_SEARCH_PATH}/packages/zlib-1.2.11.$ARCH.tar.xz \
