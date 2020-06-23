@@ -72,7 +72,8 @@ COPY --from=MINGW_LIBS \
 	${MINGW32_SEARCH_PATH}/packages/file-5.11.$ARCH.tar.xz \
 	${MINGW32_SEARCH_PATH}/packages/libintl-0.20.2.$ARCH.tar.xz \
 	${MINGW32_SEARCH_PATH}/packages/fmt-6.2.1.$ARCH.tar.xz \
-	${MINGW32_SEARCH_PATH}/packages/nlohmann-json-3.7.3.$ARCH.tar.xz \
+	${MINGW32_SEARCH_PATH}/packages/libebml-1.3.9.$ARCH.tar.xz \
+	${MINGW32_SEARCH_PATH}/packages/libmatroska-1.5.2.$ARCH.tar.xz \
 	${MINGW32_SEARCH_PATH}/packages/pugixml-1.10.$ARCH.tar.xz \
 	$DEP_PKGS_PATH
 
@@ -129,7 +130,8 @@ COPY --from=MINGW_LIBS \
 	${MINGW32_SEARCH_PATH}/packages/file-5.11.$ARCH.tar.xz \
 	${MINGW32_SEARCH_PATH}/packages/libintl-0.20.2.$ARCH.tar.xz \
 	${MINGW32_SEARCH_PATH}/packages/fmt-6.2.1.$ARCH.tar.xz \
-	${MINGW32_SEARCH_PATH}/packages/nlohmann-json-3.7.3.$ARCH.tar.xz \
+	${MINGW32_SEARCH_PATH}/packages/libebml-1.3.9.$ARCH.tar.xz \
+	${MINGW32_SEARCH_PATH}/packages/libmatroska-1.5.2.$ARCH.tar.xz \
 	${MINGW32_SEARCH_PATH}/packages/pugixml-1.10.$ARCH.tar.xz \
 	$DEP_PKGS_PATH
 
