@@ -30,10 +30,8 @@ RUN yum install -y libxslt docbook-style-xsl \
 	&& mkdir -p $SRC/mkvtoolnix && cd $SRC \
 \
 	&& curl -L -O https://mkvtoolnix.download/sources/mkvtoolnix-${MKVTOOLNIX_VER}.tar.xz \
-	&& curl -L -o libebml-release-1.3.10.tar.gz https://github.com/Matroska-Org/libebml/archive/release-1.3.10.tar.gz \
 \
-	&& tar Jxvf mkvtoolnix-${MKVTOOLNIX_VER}.tar.xz -C mkvtoolnix --strip-components=1 \
-	&& tar zxvf libebml-release-1.3.10.tar.gz
+	&& tar Jxvf mkvtoolnix-${MKVTOOLNIX_VER}.tar.xz -C mkvtoolnix --strip-components=1
 
 
 ###################Stage: ######################
@@ -73,19 +71,11 @@ COPY --from=MINGW_LIBS \
 	${MINGW32_SEARCH_PATH}/packages/flac-1.3.3.$ARCH.tar.xz \
 	${MINGW32_SEARCH_PATH}/packages/file-5.11.$ARCH.tar.xz \
 	${MINGW32_SEARCH_PATH}/packages/libintl-0.20.2.$ARCH.tar.xz \
-	${MINGW32_SEARCH_PATH}/packages/fmt-6.2.1.$ARCH.tar.xz \
-	${MINGW32_SEARCH_PATH}/packages/libmatroska-1.5.2.$ARCH.tar.xz \
-	${MINGW32_SEARCH_PATH}/packages/nlohmann-json-3.7.3.$ARCH.tar.xz \
-	${MINGW32_SEARCH_PATH}/packages/pugixml-1.10.$ARCH.tar.xz \
 	$DEP_PKGS_PATH
 
 
 RUN mkdir -p ${MINGW32_SEARCH_PATH} \
 	&& /bin/bash -c 'for pkg in ${DEP_PKGS_PATH}/*.xz;do tar Jxvf $pkg -C ${MINGW32_SEARCH_PATH};done' \
-\
-	&& cd $SRC/libebml-release-1.3.10 && mkdir builddir && cd builddir \
-	&& cmake -G "Unix Makefiles" -DCMAKE_SYSTEM_NAME=Windows -DCMAKE_INSTALL_PREFIX=${MINGW32_SEARCH_PATH} $SRC/libebml-release-1.3.10 \
-	&& make -j `nproc` && make install \
 \
 	&& cd $SRC/mkvtoolnix \
 	&& ./configure --enable-qt=no --enable-update-check=no --without-gettext --enable-static=yes \
@@ -135,19 +125,11 @@ COPY --from=MINGW_LIBS \
 	${MINGW32_SEARCH_PATH}/packages/flac-1.3.3.$ARCH.tar.xz \
 	${MINGW32_SEARCH_PATH}/packages/file-5.11.$ARCH.tar.xz \
 	${MINGW32_SEARCH_PATH}/packages/libintl-0.20.2.$ARCH.tar.xz \
-	${MINGW32_SEARCH_PATH}/packages/fmt-6.2.1.$ARCH.tar.xz \
-	${MINGW32_SEARCH_PATH}/packages/libmatroska-1.5.2.$ARCH.tar.xz \
-	${MINGW32_SEARCH_PATH}/packages/nlohmann-json-3.7.3.$ARCH.tar.xz \
-	${MINGW32_SEARCH_PATH}/packages/pugixml-1.10.$ARCH.tar.xz \
 	$DEP_PKGS_PATH
 
 
 RUN mkdir -p ${MINGW32_SEARCH_PATH} \
 	&& /bin/bash -c 'for pkg in ${DEP_PKGS_PATH}/*.xz;do tar Jxvf $pkg -C ${MINGW32_SEARCH_PATH};done' \
-\
-	&& cd $SRC/libebml-release-1.3.10 && mkdir builddir && cd builddir \
-	&& cmake -G "Unix Makefiles" -DCMAKE_SYSTEM_NAME=Windows -DCMAKE_INSTALL_PREFIX=${MINGW32_SEARCH_PATH} $SRC/libebml-release-1.3.10 \
-	&& make -j `nproc` && make install \
 \
 	&& cd $SRC/mkvtoolnix \
 	&& ./configure --enable-qt=no --enable-update-check=no --without-gettext --enable-static=yes \
