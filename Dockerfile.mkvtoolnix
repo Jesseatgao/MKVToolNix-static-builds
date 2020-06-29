@@ -40,9 +40,9 @@ FROM builder AS build_i686
 ARG HOST=i686-w64-mingw32
 ARG ARCH=i686
 
-ARG CFLAGS="-m32"
-ARG CXXFLAGS="-m32"
-ARG LDFLAGS="-m32"
+ARG CFLAGS="-m32 -march=i686"
+ARG CXXFLAGS="-m32 -march=i686"
+ARG LDFLAGS="-m32 -march=i686"
 
 ARG WINDRES_FLAGS="-F pe-i386"
 ARG DLLTOOL_FLAGS="-m i386"
@@ -69,12 +69,13 @@ COPY --from=MINGW_LIBS \
 	${MINGW32_SEARCH_PATH}/packages/zlib-1.2.11.$ARCH.tar.xz \
 	${MINGW32_SEARCH_PATH}/packages/libiconv-1.16.$ARCH.tar.xz \
 	${MINGW32_SEARCH_PATH}/packages/flac-1.3.3.$ARCH.tar.xz \
-	${MINGW32_SEARCH_PATH}/packages/file-5.11.$ARCH.tar.xz \
+	${MINGW32_SEARCH_PATH}/packages/file-5.24.$ARCH.tar.xz \
 	${MINGW32_SEARCH_PATH}/packages/libintl-0.20.2.$ARCH.tar.xz \
 	${MINGW32_SEARCH_PATH}/packages/fmt-6.2.1.$ARCH.tar.xz \
 	${MINGW32_SEARCH_PATH}/packages/libebml-1.3.10.$ARCH.tar.xz \
 	${MINGW32_SEARCH_PATH}/packages/libmatroska-1.5.2.$ARCH.tar.xz \
 	${MINGW32_SEARCH_PATH}/packages/pugixml-1.9.$ARCH.tar.xz \
+	${MINGW32_SEARCH_PATH}/packages/nlohmann-json-3.8.0.$ARCH.tar.xz \
 	$DEP_PKGS_PATH
 
 
@@ -127,12 +128,13 @@ COPY --from=MINGW_LIBS \
 	${MINGW32_SEARCH_PATH}/packages/zlib-1.2.11.$ARCH.tar.xz \
 	${MINGW32_SEARCH_PATH}/packages/libiconv-1.16.$ARCH.tar.xz \
 	${MINGW32_SEARCH_PATH}/packages/flac-1.3.3.$ARCH.tar.xz \
-	${MINGW32_SEARCH_PATH}/packages/file-5.11.$ARCH.tar.xz \
+	${MINGW32_SEARCH_PATH}/packages/file-5.24.$ARCH.tar.xz \
 	${MINGW32_SEARCH_PATH}/packages/libintl-0.20.2.$ARCH.tar.xz \
 	${MINGW32_SEARCH_PATH}/packages/fmt-6.2.1.$ARCH.tar.xz \
 	${MINGW32_SEARCH_PATH}/packages/libebml-1.3.10.$ARCH.tar.xz \
 	${MINGW32_SEARCH_PATH}/packages/libmatroska-1.5.2.$ARCH.tar.xz \
 	${MINGW32_SEARCH_PATH}/packages/pugixml-1.9.$ARCH.tar.xz \
+	${MINGW32_SEARCH_PATH}/packages/nlohmann-json-3.8.0.$ARCH.tar.xz \
 	$DEP_PKGS_PATH
 
 
