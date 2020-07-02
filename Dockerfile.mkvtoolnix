@@ -103,7 +103,7 @@ ARG ARCH=x86_64
 
 ARG CFLAGS="-m64 -mno-ms-bitfields -DWINVER=0x0601 -D_WIN32_WINNT=0x0601 -D_FILE_OFFSET_BITS=64 -fstack-protector-strong"
 ARG CXXFLAGS="-m64 -mno-ms-bitfields -DWINVER=0x0601 -D_WIN32_WINNT=0x0601 -D_FILE_OFFSET_BITS=64 -fstack-protector-strong"
-ARG LDFLAGS="-m64 -fstack-protector-strong -fpie -Wl,-pie -Wl,--dynamicbase -Wl,--nxcompat -Wl,--disable-auto-image-base -Wl,--high-entropy-va -Wl,--image-base,0x140000000 -Wl,-e_mainCRTStartup"
+ARG LDFLAGS="-m64 -fstack-protector-strong -fpie -Wl,-pie -Wl,--dynamicbase -Wl,--nxcompat -Wl,--disable-auto-image-base -Wl,--high-entropy-va -Wl,--image-base,0x140000000 -Wl,-emainCRTStartup"
 
 ARG WINDRES_FLAGS="-F pe-x86-64"
 ARG DLLTOOL_FLAGS="-m i386:x86-64"
