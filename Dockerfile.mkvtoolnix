@@ -40,9 +40,9 @@ FROM builder AS build_i686
 ARG HOST=i686-w64-mingw32
 ARG ARCH=i686
 
-ARG CFLAGS="-m32 -march=i686 -mno-ms-bitfields -DWINVER=0x0601 -D_WIN32_WINNT=0x0601  -D_FILE_OFFSET_BITS=64 -fstack-protector"
-ARG CXXFLAGS="-m32 -march=i686 -mno-ms-bitfields -DWINVER=0x0601 -D_WIN32_WINNT=0x0601  -D_FILE_OFFSET_BITS=64 -fstack-protector"
-ARG LDFLAGS="-m32 -march=i686 -fstack-protector -fpie -Wl,-pie -Wl,--dynamicbase -Wl,--nxcompat"
+ARG CFLAGS="-m32 -march=i686 -mno-ms-bitfields -DWINVER=0x0601 -D_WIN32_WINNT=0x0601  -D_FILE_OFFSET_BITS=64 -fstack-protector-strong"
+ARG CXXFLAGS="-m32 -march=i686 -mno-ms-bitfields -DWINVER=0x0601 -D_WIN32_WINNT=0x0601  -D_FILE_OFFSET_BITS=64 -fstack-protector-strong"
+ARG LDFLAGS="-m32 -march=i686 -fstack-protector-strong -fpie -Wl,-pie -Wl,--dynamicbase -Wl,--nxcompat"
 
 ARG WINDRES_FLAGS="-F pe-i386"
 ARG DLLTOOL_FLAGS="-m i386"
@@ -96,9 +96,9 @@ FROM builder AS build_x86_64
 ARG HOST=x86_64-w64-mingw32
 ARG ARCH=x86_64
 
-ARG CFLAGS="-m64 -mno-ms-bitfields -DWINVER=0x0601 -D_WIN32_WINNT=0x0601 -D_FILE_OFFSET_BITS=64 -fstack-protector"
-ARG CXXFLAGS="-m64 -mno-ms-bitfields -DWINVER=0x0601 -D_WIN32_WINNT=0x0601 -D_FILE_OFFSET_BITS=64 -fstack-protector"
-ARG LDFLAGS="-m64 -fstack-protector -fpie -Wl,-pie -Wl,--dynamicbase -Wl,--nxcompat"
+ARG CFLAGS="-m64 -mno-ms-bitfields -DWINVER=0x0601 -D_WIN32_WINNT=0x0601 -D_FILE_OFFSET_BITS=64 -fstack-protector-strong"
+ARG CXXFLAGS="-m64 -mno-ms-bitfields -DWINVER=0x0601 -D_WIN32_WINNT=0x0601 -D_FILE_OFFSET_BITS=64 -fstack-protector-strong"
+ARG LDFLAGS="-m64 -fstack-protector-strong -fpie -Wl,-pie -Wl,--dynamicbase -Wl,--nxcompat"
 
 ARG WINDRES_FLAGS="-F pe-x86-64"
 ARG DLLTOOL_FLAGS="-m i386:x86-64"
