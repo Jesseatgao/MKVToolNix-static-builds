@@ -196,9 +196,12 @@ RUN	mkdir -p $PREFIX $PKG_CONFIG_PATH \
 \
 	&& mkdir -p $BUILDROOT/file-$FILE_VER && cd $BUILDROOT/file-$FILE_VER \
 	&& autoreconf -if $SRC/file-$FILE_VER \
-	&& CFLAGS="${CFLAGS} -DHAVE_PREAD" LDFLAGS="${LDFLAGS}" $SRC/file-$FILE_VER/configure --prefix=$PREFIX \
-	    --host=$HOST --build=$BUILD --enable-static=yes --disable-silent-rules --disable-shared \
-	&& make -j $(($(nproc) + 3)) && make install \
+	&& cp -rp $SRC/file-$FILE_VER file-$FILE_VER.native \
+	&& cd file-$FILE_VER.native && CC=gcc AR=ar RANLIB=ranlib LD=ld CFLAGS= LDFLAGS= ./configure --disable-shared \
+	&& make -j $(($(nproc) + 3)) \
+	&& cd $BUILDROOT/file-$FILE_VER \
+	&& CFLAGS="${CFLAGS} -DHAVE_PREAD" LDFLAGS="${LDFLAGS}" $SRC/file-$FILE_VER/configure --prefix=$PREFIX --host=$HOST --build=$BUILD --enable-static=yes --disable-silent-rules --disable-shared \
+	&& make -j $(($(nproc) + 3)) FILE_COMPILE="$BUILDROOT/file-$FILE_VER/file-$FILE_VER.native/src/file" && make install \
 \
 	&& mkdir -p $BUILDROOT/pugixml-$PUGIXML_VER && cd $BUILDROOT/pugixml-$PUGIXML_VER \
 	&& cmake -G "Unix Makefiles" -DCMAKE_SYSTEM_NAME=Linux -DCMAKE_INSTALL_PREFIX=$PREFIX $SRC/pugixml-$PUGIXML_VER \
