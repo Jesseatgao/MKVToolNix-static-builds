@@ -1,7 +1,7 @@
 ARG MKVTOOLNIX_BIN=mkvmerge
 
 ###################Stage 0: ######################
-FROM cgdoc/mingw-w64-multilib:posix-v1.0 AS builder
+FROM cgdoc/mingw-w64-multilib:win32-v1.0 AS builder
 
 ENV BUILD=x86_64-unknown-linux-gnu
 
@@ -41,8 +41,7 @@ ENV GETTEXT_VER=0.20.2
 ENV NLOHMANN_VER=3.8.0
 
 
-RUN yum install -y libstdc++-static.i686 libstdc++-static.x86_64 glibc-static.i686 glibc-static.x86_64 \
-                    libxslt docbook-style-xsl \
+RUN yum install -y libxslt docbook-style-xsl \
 \
 	&& mkdir -p $SRC && cd $SRC \
     && curl -L -O https://mkvtoolnix.download/sources/mkvtoolnix-$MKVTOOLNIX_VER.tar.xz \
