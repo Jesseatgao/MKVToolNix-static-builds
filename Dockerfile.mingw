@@ -84,7 +84,7 @@ RUN mkdir -p ${MINGW32_SEARCH_PATH} \
 	&& /bin/bash -c 'for pkg in ${DEP_PKGS_PATH}/*.xz;do tar Jxvf $pkg -C ${MINGW32_SEARCH_PATH};done' \
 \
 	&& cd $SRC/mkvtoolnix \
-	&& ./configure --enable-qt=no --enable-update-check=no --without-gettext --enable-static=yes \
+	&& ./configure --enable-qt=no --enable-update-check=no --enable-static=yes \
 		--with-boost=${MINGW32_SEARCH_PATH} --host=$HOST \
 	&& rake apps:strip
 
@@ -144,7 +144,7 @@ RUN mkdir -p ${MINGW32_SEARCH_PATH} \
 	&& /bin/bash -c 'for pkg in ${DEP_PKGS_PATH}/*.xz;do tar Jxvf $pkg -C ${MINGW32_SEARCH_PATH};done' \
 \
 	&& cd $SRC/mkvtoolnix \
-	&& ./configure --enable-qt=no --enable-update-check=no --without-gettext --enable-static=yes \
+	&& ./configure --enable-qt=no --enable-update-check=no --enable-static=yes \
 		--with-boost=${MINGW32_SEARCH_PATH} --host=$HOST \
 	&& rake apps:strip
 
