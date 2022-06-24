@@ -1,6 +1,6 @@
-FROM cgdoc/mingw-w64-libs:posixv1.1-v1.0 AS MINGW_LIBS
+FROM cgdoc/mingw-w64-libs:posixv1.4-v1.0 AS MINGW_LIBS
 
-FROM cgdoc/mingw-w64-multilib:posix-v1.1 AS builder
+FROM cgdoc/mingw-w64-multilib:posix-v1.4 AS builder
 
 
 ENV BUILD=x86_64-unknown-linux-gnu
@@ -21,17 +21,33 @@ ENV NM $MINGW32-nm
 
 ENV SRC=/opt/_src/
 
-ARG MKVTOOLNIX_VER=47.0.0
+ARG MKVTOOLNIX_VER=58.0.0
+
+ENV ZLIB_VER=1.2.12
+ENV LIBICONV_VER=1.17
+ENV BOOST_VER=1.79.0
+ENV OGG_VER=1.3.5
+ENV VORBIS_VER=1.3.7
+ENV FLAC_VER=1.3.3
+ENV FILE_VER=5.24
+ENV PUGIXML_VER=1.12.1
+ENV FMT_VER=8.1.1
+ENV LIBEBML_VER=1.4.2
+ENV LIBMATROSKA_VER=1.6.3
+ENV GETTEXT_VER=0.20.2
+ENV LIBGNURX_VER=2.5.1
+ENV NLOHMANN_VER=3.10.5
+ENV PCRE2_VER=10.40
 
 
 RUN yum install -y libxslt docbook-style-xsl \
-	&& yum clean all \
+    && yum clean all \
 \
-	&& mkdir -p $SRC/mkvtoolnix && cd $SRC \
+    && mkdir -p $SRC/mkvtoolnix && cd $SRC \
 \
-	&& curl -L -O https://mkvtoolnix.download/sources/mkvtoolnix-${MKVTOOLNIX_VER}.tar.xz \
+    && curl -L -O https://mkvtoolnix.download/sources/mkvtoolnix-${MKVTOOLNIX_VER}.tar.xz \
 \
-	&& tar Jxvf mkvtoolnix-${MKVTOOLNIX_VER}.tar.xz -C mkvtoolnix --strip-components=1
+    && tar Jxvf mkvtoolnix-${MKVTOOLNIX_VER}.tar.xz -C mkvtoolnix --strip-components=1
 
 
 ###################Stage: ######################
@@ -42,7 +58,7 @@ ARG ARCH=i686
 
 ARG CFLAGS="-m32 -march=i686 -mno-ms-bitfields -fstack-protector-strong"
 ARG CXXFLAGS="-m32 -march=i686 -mno-ms-bitfields -fstack-protector-strong"
-ARG CPPFLAGS="-DWINVER=0x0601 -D_WIN32_WINNT=0x0601 -D_FILE_OFFSET_BITS=64 -DSYS_WINDOWS"
+ARG CPPFLAGS="-DWINVER=0x0601 -D_WIN32_WINNT=0x0601 -D_FILE_OFFSET_BITS=64 -DPCRE2_STATIC"
 ARG LDFLAGS="-m32 -march=i686 -fstack-protector-strong -fpie -Wl,-pie -Wl,--dynamicbase -Wl,--nxcompat -Wl,--disable-auto-image-base -Wl,-e_mainCRTStartup"
 
 ARG WINDRES_FLAGS="-F pe-i386"
@@ -54,7 +70,7 @@ ENV DLLTOOL "${MINGW32}-dlltool ${DLLTOOL_FLAGS}"
 
 
 ARG MINGW32_SEARCH_PATH=/opt/mingw32/$HOST
-ARG PKG_CONFIG_PATH=${MINGW32_SEARCH_PATH}/lib/pkgconfig/
+ARG PKG_CONFIG_PATH="${MINGW32_SEARCH_PATH}/lib/pkgconfig/:${MINGW32_SEARCH_PATH}/lib32/pkgconfig/"
 
 ARG CPPFLAGS="${CPPFLAGS} -I${MINGW32_SEARCH_PATH}/include"
 ARG LDFLAGS="${LDFLAGS} -L${MINGW32_SEARCH_PATH}/lib"
@@ -63,30 +79,30 @@ ARG LDFLAGS="${LDFLAGS} -L${MINGW32_SEARCH_PATH}/lib"
 ARG DEP_PKGS_PATH=/opt/mingw32/_pkgs/
 
 COPY --from=MINGW_LIBS \
-	${MINGW32_SEARCH_PATH}/packages/boost-1.60.0.$ARCH.tar.xz \
-	${MINGW32_SEARCH_PATH}/packages/libogg-1.3.4.$ARCH.tar.xz \
-	${MINGW32_SEARCH_PATH}/packages/libvorbis-1.3.6.$ARCH.tar.xz \
-	${MINGW32_SEARCH_PATH}/packages/zlib-1.2.11.$ARCH.tar.xz \
-	${MINGW32_SEARCH_PATH}/packages/libiconv-1.16.$ARCH.tar.xz \
-	${MINGW32_SEARCH_PATH}/packages/flac-1.3.3.$ARCH.tar.xz \
-	${MINGW32_SEARCH_PATH}/packages/file-5.24.$ARCH.tar.xz \
-	${MINGW32_SEARCH_PATH}/packages/libintl-0.20.2.$ARCH.tar.xz \
-	${MINGW32_SEARCH_PATH}/packages/mingw-libgnurx-2.5.1.$ARCH.tar.xz \
-	${MINGW32_SEARCH_PATH}/packages/fmt-6.2.1.$ARCH.tar.xz \
-	${MINGW32_SEARCH_PATH}/packages/libebml-1.3.10.$ARCH.tar.xz \
-	${MINGW32_SEARCH_PATH}/packages/libmatroska-1.5.2.$ARCH.tar.xz \
-	${MINGW32_SEARCH_PATH}/packages/pugixml-1.9.$ARCH.tar.xz \
-	${MINGW32_SEARCH_PATH}/packages/nlohmann-json-3.8.0.$ARCH.tar.xz \
-	$DEP_PKGS_PATH
+    ${MINGW32_SEARCH_PATH}/packages/boost-$BOOST_VER.$ARCH.tar.xz \
+    ${MINGW32_SEARCH_PATH}/packages/libogg-$OGG_VER.$ARCH.tar.xz \
+    ${MINGW32_SEARCH_PATH}/packages/libvorbis-$VORBIS_VER.$ARCH.tar.xz \
+    ${MINGW32_SEARCH_PATH}/packages/zlib-$ZLIB_VER.$ARCH.tar.xz \
+    ${MINGW32_SEARCH_PATH}/packages/libiconv-$LIBICONV_VER.$ARCH.tar.xz \
+    ${MINGW32_SEARCH_PATH}/packages/flac-$FLAC_VER.$ARCH.tar.xz \
+    ${MINGW32_SEARCH_PATH}/packages/file-$FILE_VER.$ARCH.tar.xz \
+    ${MINGW32_SEARCH_PATH}/packages/libintl-$GETTEXT_VER.$ARCH.tar.xz \
+    ${MINGW32_SEARCH_PATH}/packages/mingw-libgnurx-$LIBGNURX_VER.$ARCH.tar.xz \
+    ${MINGW32_SEARCH_PATH}/packages/fmt-$FMT_VER.$ARCH.tar.xz \
+    ${MINGW32_SEARCH_PATH}/packages/libebml-$LIBEBML_VER.$ARCH.tar.xz \
+    ${MINGW32_SEARCH_PATH}/packages/libmatroska-$LIBMATROSKA_VER.$ARCH.tar.xz \
+    ${MINGW32_SEARCH_PATH}/packages/pugixml-$PUGIXML_VER.$ARCH.tar.xz \
+    ${MINGW32_SEARCH_PATH}/packages/nlohmann-json-$NLOHMANN_VER.$ARCH.tar.xz \
+    ${MINGW32_SEARCH_PATH}/packages/pcre2-$PCRE2_VER.$ARCH.tar.xz \
+    $DEP_PKGS_PATH
 
 
 RUN mkdir -p ${MINGW32_SEARCH_PATH} \
-	&& /bin/bash -c 'for pkg in ${DEP_PKGS_PATH}/*.xz;do tar Jxvf $pkg -C ${MINGW32_SEARCH_PATH};done' \
+    && /bin/bash -c 'for pkg in ${DEP_PKGS_PATH}/*.xz;do tar Jxvf $pkg -C ${MINGW32_SEARCH_PATH};done' \
 \
-	&& cd $SRC/mkvtoolnix \
-	&& ./configure --enable-qt=no --enable-update-check=no --enable-static=yes \
-		--with-boost=${MINGW32_SEARCH_PATH} --host=$HOST \
-	&& rake apps:strip
+    && cd $SRC/mkvtoolnix \
+    && ./configure --enable-qt=no --enable-qt6=no --enable-update-check=no --enable-static=yes --host=$HOST \
+    && rake apps:strip
 
 
 ###################Stage: ######################
@@ -103,7 +119,7 @@ ARG ARCH=x86_64
 
 ARG CFLAGS="-m64 -mno-ms-bitfields -fstack-protector-strong"
 ARG CXXFLAGS="-m64 -mno-ms-bitfields -fstack-protector-strong"
-ARG CPPFLAGS="-DWINVER=0x0601 -D_WIN32_WINNT=0x0601 -D_FILE_OFFSET_BITS=64 -DSYS_WINDOWS"
+ARG CPPFLAGS="-DWINVER=0x0601 -D_WIN32_WINNT=0x0601 -D_FILE_OFFSET_BITS=64 -DPCRE2_STATIC"
 ARG LDFLAGS="-m64 -fstack-protector-strong -fpie -Wl,-pie -Wl,--dynamicbase -Wl,--nxcompat -Wl,--disable-auto-image-base -Wl,--high-entropy-va -Wl,--image-base,0x140000000 -Wl,-emainCRTStartup"
 
 ARG WINDRES_FLAGS="-F pe-x86-64"
@@ -115,7 +131,7 @@ ENV DLLTOOL "${MINGW32}-dlltool ${DLLTOOL_FLAGS}"
 
 
 ARG MINGW32_SEARCH_PATH=/opt/mingw32/$HOST
-ARG PKG_CONFIG_PATH=${MINGW32_SEARCH_PATH}/lib/pkgconfig/
+ARG PKG_CONFIG_PATH="${MINGW32_SEARCH_PATH}/lib/pkgconfig/:${MINGW32_SEARCH_PATH}/lib64/pkgconfig/"
 
 ARG CPPFLAGS="${CPPFLAGS} -I${MINGW32_SEARCH_PATH}/include"
 ARG LDFLAGS="${LDFLAGS} -L${MINGW32_SEARCH_PATH}/lib"
@@ -123,30 +139,30 @@ ARG LDFLAGS="${LDFLAGS} -L${MINGW32_SEARCH_PATH}/lib"
 ARG DEP_PKGS_PATH=/opt/mingw32/_pkgs/
 
 COPY --from=MINGW_LIBS \
-	${MINGW32_SEARCH_PATH}/packages/boost-1.60.0.$ARCH.tar.xz \
-	${MINGW32_SEARCH_PATH}/packages/libogg-1.3.4.$ARCH.tar.xz \
-	${MINGW32_SEARCH_PATH}/packages/libvorbis-1.3.6.$ARCH.tar.xz \
-	${MINGW32_SEARCH_PATH}/packages/zlib-1.2.11.$ARCH.tar.xz \
-	${MINGW32_SEARCH_PATH}/packages/libiconv-1.16.$ARCH.tar.xz \
-	${MINGW32_SEARCH_PATH}/packages/flac-1.3.3.$ARCH.tar.xz \
-	${MINGW32_SEARCH_PATH}/packages/file-5.24.$ARCH.tar.xz \
-	${MINGW32_SEARCH_PATH}/packages/libintl-0.20.2.$ARCH.tar.xz \
-	${MINGW32_SEARCH_PATH}/packages/mingw-libgnurx-2.5.1.$ARCH.tar.xz \
-	${MINGW32_SEARCH_PATH}/packages/fmt-6.2.1.$ARCH.tar.xz \
-	${MINGW32_SEARCH_PATH}/packages/libebml-1.3.10.$ARCH.tar.xz \
-	${MINGW32_SEARCH_PATH}/packages/libmatroska-1.5.2.$ARCH.tar.xz \
-	${MINGW32_SEARCH_PATH}/packages/pugixml-1.9.$ARCH.tar.xz \
-	${MINGW32_SEARCH_PATH}/packages/nlohmann-json-3.8.0.$ARCH.tar.xz \
-	$DEP_PKGS_PATH
+    ${MINGW32_SEARCH_PATH}/packages/boost-$BOOST_VER.$ARCH.tar.xz \
+    ${MINGW32_SEARCH_PATH}/packages/libogg-$OGG_VER.$ARCH.tar.xz \
+    ${MINGW32_SEARCH_PATH}/packages/libvorbis-$VORBIS_VER.$ARCH.tar.xz \
+    ${MINGW32_SEARCH_PATH}/packages/zlib-$ZLIB_VER.$ARCH.tar.xz \
+    ${MINGW32_SEARCH_PATH}/packages/libiconv-$LIBICONV_VER.$ARCH.tar.xz \
+    ${MINGW32_SEARCH_PATH}/packages/flac-$FLAC_VER.$ARCH.tar.xz \
+    ${MINGW32_SEARCH_PATH}/packages/file-$FILE_VER.$ARCH.tar.xz \
+    ${MINGW32_SEARCH_PATH}/packages/libintl-$GETTEXT_VER.$ARCH.tar.xz \
+    ${MINGW32_SEARCH_PATH}/packages/mingw-libgnurx-$LIBGNURX_VER.$ARCH.tar.xz \
+    ${MINGW32_SEARCH_PATH}/packages/fmt-$FMT_VER.$ARCH.tar.xz \
+    ${MINGW32_SEARCH_PATH}/packages/libebml-$LIBEBML_VER.$ARCH.tar.xz \
+    ${MINGW32_SEARCH_PATH}/packages/libmatroska-$LIBMATROSKA_VER.$ARCH.tar.xz \
+    ${MINGW32_SEARCH_PATH}/packages/pugixml-$PUGIXML_VER.$ARCH.tar.xz \
+    ${MINGW32_SEARCH_PATH}/packages/nlohmann-json-$NLOHMANN_VER.$ARCH.tar.xz \
+    ${MINGW32_SEARCH_PATH}/packages/pcre2-$PCRE2_VER.$ARCH.tar.xz \
+    $DEP_PKGS_PATH
 
 
 RUN mkdir -p ${MINGW32_SEARCH_PATH} \
-	&& /bin/bash -c 'for pkg in ${DEP_PKGS_PATH}/*.xz;do tar Jxvf $pkg -C ${MINGW32_SEARCH_PATH};done' \
+    && /bin/bash -c 'for pkg in ${DEP_PKGS_PATH}/*.xz;do tar Jxvf $pkg -C ${MINGW32_SEARCH_PATH};done' \
 \
-	&& cd $SRC/mkvtoolnix \
-	&& ./configure --enable-qt=no --enable-update-check=no --enable-static=yes \
-		--with-boost=${MINGW32_SEARCH_PATH} --host=$HOST \
-	&& rake apps:strip
+    && cd $SRC/mkvtoolnix \
+    && ./configure --enable-qt=no --enable-qt6=no --enable-update-check=no --enable-static=yes --host=$HOST \
+    && rake apps:strip
 
 
 ###################Stage: ######################
