@@ -1,19 +1,39 @@
-
-name: Build mkvtoolnix(mkvmerge) {i686, x86_64} for {Windows, linux}
+name: Release mkvtoolnix(mkvmerge) {i686, x86_64} for {Windows, linux}
 
 on:
-  release:
-    types: [published]
+  workflow_dispatch:
+    inputs:
+      libs:
+        description: The tag of the prebuilt `mingw-w64-libs` docker image
+        default: cgdoc/mingw-w64-libs:win32v1.4-v1.0
+        required: true
+      builder:
+        description: The tag of the docker builder image
+        default: cgdoc/mingw-w64-multilib:win32-v1.4
+        required: true
+      tag-name:
+        description: The name of the tag for this release
+        default: v58.0.0-mingw-w64-win32v1.4
+        required: true
+      release-name:
+        description: The title of the release
+        default: MKVToolNix (`mkvmerge`) v58.0.0 static build - Windows & Linux
+        required: true
+      release-body:
+        description: The description of the release
+        default: Build using the docker image `cgdoc/mingw-w64-multilib:win32-v1.4`
+        required: true
 
 jobs:
-  build-mkvtoolnix-mingw:
+  build-mkvtoolnix:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - name: Build mkvtoolnix Docker image
-        run: docker build -t mkvtoolnix_mingw -f Dockerfile.mingw .
-      - name: Create a container
+
+      - name: Build mkvtoolnix Docker image - Windows
+        run: docker build --build-arg MINGW_W64_IMG=${{ github.event.inputs.builder }} --build-arg MINGW_W64_LIBS=${{ github.event.inputs.libs }} -t mkvtoolnix_mingw -f Dockerfile.mingw .
+      - name: Create a container - Windows
         id: ccont
         run: echo ::set-output name=id::$(docker create mkvtoolnix_mingw /bin/bash)
       - name: Copy built mkvtoolnix - mkvmerge.exe
@@ -24,77 +44,44 @@ jobs:
           cd mkvtoolnix
           zip mkvtoolnix-i686-win.zip i686/mkvmerge.exe
           zip mkvtoolnix-x86_64-win.zip x86_64/mkvmerge.exe
-      - name: rm the container and image
+          rm -f i686/mkvmerge.exe x86_64/mkvmerge.exe
+          cd ..
+      - name: rm the container and image - Windows
         run: |
           docker rm ${{steps.ccont.outputs.id}}
           docker image rm mkvtoolnix_mingw
-      - name: Build upload url i686
-        id: bldurl-i686
-        run: echo ::set-output name=url::https://uploads.github.com/repos/${GITHUB_REPOSITORY}/releases/$(jq --raw-output '.release.id' $GITHUB_EVENT_PATH)/assets?name=mkvtoolnix-i686-win.zip
-      - name: Upload release asset i686
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.bldurl-i686.outputs.url }}
-          asset_path: mkvtoolnix/mkvtoolnix-i686-win.zip
-          asset_name: mkvtoolnix-i686-win.zip
-          asset_content_type: application/zip
-      - name: Build upload url x86_64
-        id: bldurl-x86_64
-        run: echo ::set-output name=url::https://uploads.github.com/repos/${GITHUB_REPOSITORY}/releases/$(jq --raw-output '.release.id' $GITHUB_EVENT_PATH)/assets?name=mkvtoolnix-x86_64-win.zip
-      - name: Upload release asset x86_64
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.bldurl-x86_64.outputs.url }}
-          asset_path: mkvtoolnix/mkvtoolnix-x86_64-win.zip
-          asset_name: mkvtoolnix-x86_64-win.zip
-          asset_content_type: application/zip
-  build-mkvtoolnix-linux:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      - name: Build mkvtoolnix Docker image
-        run: docker build -t mkvtoolnix_linux -f Dockerfile.linux .
-      - name: Create a container
-        id: ccont
+
+      - name: Build mkvtoolnix Docker image - Linux
+        run: docker build --build-arg MINGW_W64_IMG=${{ github.event.inputs.builder }} -t mkvtoolnix_linux -f Dockerfile.linux .
+      - name: Create a container - Linux
+        id: ccont2
         run: echo ::set-output name=id::$(docker create mkvtoolnix_linux /bin/bash)
       - name: Copy built mkvtoolnix - mkvmerge
         run: |
-          mkdir -p mkvtoolnix/i686 mkvtoolnix/x86_64
-          docker cp ${{steps.ccont.outputs.id}}:/i686/mkvmerge mkvtoolnix/i686/
-          docker cp ${{steps.ccont.outputs.id}}:/x86_64/mkvmerge mkvtoolnix/x86_64/
+          docker cp ${{steps.ccont2.outputs.id}}:/i686/mkvmerge mkvtoolnix/i686/
+          docker cp ${{steps.ccont2.outputs.id}}:/x86_64/mkvmerge mkvtoolnix/x86_64/
           cd mkvtoolnix
           tar Jcvf mkvtoolnix-i686-linux.tar.xz i686/mkvmerge
           tar Jcvf mkvtoolnix-x86_64-linux.tar.xz x86_64/mkvmerge
-      - name: rm the container and image
+          rm -f i686/mkvmerge x86_64/mkvmerge
+          cd ..
+      - name: rm the container and image - Linux
         run: |
-          docker rm ${{steps.ccont.outputs.id}}
+          docker rm ${{steps.ccont2.outputs.id}}
           docker image rm mkvtoolnix_linux
-      - name: Build upload url i686
-        id: bldurl-i686
-        run: echo ::set-output name=url::https://uploads.github.com/repos/${GITHUB_REPOSITORY}/releases/$(jq --raw-output '.release.id' $GITHUB_EVENT_PATH)/assets?name=mkvtoolnix-i686-linux.tar.xz
-      - name: Upload release asset i686
-        uses: actions/upload-release-asset@v1
+
+      - name: Release
+        uses: softprops/action-gh-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.bldurl-i686.outputs.url }}
-          asset_path: mkvtoolnix/mkvtoolnix-i686-linux.tar.xz
-          asset_name: mkvtoolnix-i686-linux.tar.xz
-          asset_content_type: application/x-gtar
-      - name: Build upload url x86_64
-        id: bldurl-x86_64
-        run: echo ::set-output name=url::https://uploads.github.com/repos/${GITHUB_REPOSITORY}/releases/$(jq --raw-output '.release.id' $GITHUB_EVENT_PATH)/assets?name=mkvtoolnix-x86_64-linux.tar.xz
-      - name: Upload release asset x86_64
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.bldurl-x86_64.outputs.url }}
-          asset_path: mkvtoolnix/mkvtoolnix-x86_64-linux.tar.xz
-          asset_name: mkvtoolnix-x86_64-linux.tar.xz
-          asset_content_type: application/x-gtar
+          tag_name: ${{ github.event.inputs.tag-name }}
+          name: ${{ github.event.inputs.release-name }}
+          body: ${{ github.event.inputs.release-body }}
+          draft: false
+          prerelease: false
+          files: |
+            mkvtoolnix/mkvtoolnix-i686-win.zip
+            mkvtoolnix/mkvtoolnix-x86_64-win.zip
+            mkvtoolnix/mkvtoolnix-i686-linux.tar.xz
+            mkvtoolnix/mkvtoolnix-x86_64-linux.tar.xz
