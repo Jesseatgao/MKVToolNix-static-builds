@@ -3,13 +3,13 @@ name: Release mkvtoolnix(mkvmerge) {i686, x86_64} for {Windows, linux}
 on:
   workflow_dispatch:
     inputs:
-      libs:
-        description: The tag of the prebuilt `mingw-w64-libs` docker image
-        default: cgdoc/mingw-w64-libs:win32v1.4-v1.0
-        required: true
       builder:
         description: The tag of the docker builder image
         default: cgdoc/mingw-w64-multilib:win32-v1.4
+        required: true
+      libs:
+        description: The tag of the prebuilt `mingw-w64-libs` docker image
+        default: cgdoc/mingw-w64-libs:win32v1.4-v1.0
         required: true
       tag-name:
         description: The name of the tag for this release
@@ -25,7 +25,7 @@ on:
         required: true
 
 jobs:
-  build-mkvtoolnix:
+  build-release-mkvtoolnix:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
