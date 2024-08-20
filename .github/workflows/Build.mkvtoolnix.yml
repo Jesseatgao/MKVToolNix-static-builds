@@ -5,23 +5,23 @@ on:
     inputs:
       builder:
         description: The tag of the docker builder image
-        default: cgdoc/mingw-w64-multilib:win32-v1.4
+        default: cgdoc/mingw-w64-multilib:win32-v1.5
         required: true
       libs:
         description: The tag of the prebuilt `mingw-w64-libs` docker image
-        default: cgdoc/mingw-w64-libs:win32v1.4-v1.0
+        default: cgdoc/mingw-w64-libs:win32v1.5-v1.0
         required: true
       tag-name:
         description: The name of the tag for this release
-        default: v58.0.0-mingw-w64-win32v1.4
+        default: v58.0.0-mingw-w64-win32v1.5
         required: true
       release-name:
         description: The title of the release
-        default: MKVToolNix (`mkvmerge`) v58.0.0 static build - Windows & Linux
+        default: MKVToolNix (`mkvmerge`) v58.0.0 static build - Windows & Linux - By `:win32-v1.5`
         required: true
       release-body:
         description: The description of the release
-        default: Build using the docker image `cgdoc/mingw-w64-multilib:win32-v1.4`
+        default: Build using the docker image `cgdoc/mingw-w64-multilib:win32-v1.5`
         required: true
 
 jobs:
@@ -29,13 +29,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Build mkvtoolnix Docker image - Windows
         run: docker build --build-arg MINGW_W64_IMG=${{ github.event.inputs.builder }} --build-arg MINGW_W64_LIBS=${{ github.event.inputs.libs }} -t mkvtoolnix_mingw -f Dockerfile.mingw .
       - name: Create a container - Windows
         id: ccont
-        run: echo ::set-output name=id::$(docker create mkvtoolnix_mingw /bin/bash)
+        run: echo "id=$(docker create mkvtoolnix_mingw /bin/bash)" >> "$GITHUB_OUTPUT"
       - name: Copy built mkvtoolnix - mkvmerge.exe
         run: |
           mkdir -p mkvtoolnix/i686 mkvtoolnix/x86_64
@@ -55,7 +55,7 @@ jobs:
         run: docker build --build-arg MINGW_W64_IMG=${{ github.event.inputs.builder }} -t mkvtoolnix_linux -f Dockerfile.linux .
       - name: Create a container - Linux
         id: ccont2
-        run: echo ::set-output name=id::$(docker create mkvtoolnix_linux /bin/bash)
+        run: echo "id=$(docker create mkvtoolnix_linux /bin/bash)" >> "$GITHUB_OUTPUT"
       - name: Copy built mkvtoolnix - mkvmerge
         run: |
           docker cp ${{steps.ccont2.outputs.id}}:/i686/mkvmerge mkvtoolnix/i686/
@@ -71,7 +71,7 @@ jobs:
           docker image rm mkvtoolnix_linux
 
       - name: Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
