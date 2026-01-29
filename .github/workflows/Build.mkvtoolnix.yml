@@ -5,23 +5,23 @@ on:
     inputs:
       builder:
         description: The tag of the docker builder image
-        default: cgdoc/mingw-w64-multilib:win32-v1.5
+        default: cgdoc/mingw-w64-multilib:win32-v1.8-el9
         required: true
       libs:
         description: The tag of the prebuilt `mingw-w64-libs` docker image
-        default: cgdoc/mingw-w64-libs:win32v1.5-v1.0
+        default: cgdoc/mingw-w64-libs:win32v1.8el9-v1.0
         required: true
       tag-name:
         description: The name of the tag for this release
-        default: v58.0.0-mingw-w64-win32v1.5
+        default: v58.0.0-mingw-w64-win32v1.8el9
         required: true
       release-name:
         description: The title of the release
-        default: MKVToolNix (`mkvmerge`) v58.0.0 static build - Windows & Linux - By `:win32-v1.5`
+        default: MKVToolNix (`mkvmerge`) v58.0.0 static build - Windows & Linux - By `:win32-v1.8-el9`
         required: true
       release-body:
         description: The description of the release
-        default: Build using the docker image `cgdoc/mingw-w64-multilib:win32-v1.5`
+        default: Build using the docker image `cgdoc/mingw-w64-multilib:win32-v1.8-el9`
         required: true
 
 jobs:

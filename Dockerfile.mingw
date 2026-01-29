@@ -1,8 +1,8 @@
 # MINGW_W64_IMG := cgdoc/mingw-w64-multilib:win32-vX.Y | cgdoc/mingw-w64-multilib:posix-vX.Y
-ARG MINGW_W64_IMG=cgdoc/mingw-w64-multilib:win32-v1.5
+ARG MINGW_W64_IMG=cgdoc/mingw-w64-multilib:win32-v1.8-el9
 
 # MINGW_W64_LIBS := cgdoc/mingw-w64-libs:win32vX.Y-v1.0 | cgdoc/mingw-w64-libs:posixvX.Y-v1.0
-ARG MINGW_W64_LIBS=cgdoc/mingw-w64-libs:win32v1.5-v1.0
+ARG MINGW_W64_LIBS=cgdoc/mingw-w64-libs:win32v1.8el9-v1.0
 #########################################################
 FROM $MINGW_W64_LIBS AS MINGW_LIBS
 
