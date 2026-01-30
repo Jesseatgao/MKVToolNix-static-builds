@@ -44,7 +44,7 @@ ENV NLOHMANN_VER=3.10.5
 ENV PCRE2_VER=10.40
 
 
-RUN yum install -y libxslt docbook-style-xsl libstdc++-static.{x86_64,i686} \
+RUN yum install -y libxslt docbook-style-xsl \
 \
     && mkdir -p $SRC && cd $SRC \
     && curl -L -O https://mkvtoolnix.download/sources/mkvtoolnix-$MKVTOOLNIX_VER.tar.xz \
