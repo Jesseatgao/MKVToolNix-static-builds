@@ -13,16 +13,16 @@ ENV BUILD=x86_64-unknown-linux-gnu
 
 ENV MINGW32=x86_64-w64-mingw32
 
-ENV CC $MINGW32-gcc
-ENV CXX $MINGW32-g++
-ENV AR $MINGW32-ar
-ENV RANLIB $MINGW32-ranlib
-ENV STRIP $MINGW32-strip
-ENV LD $MINGW32-ld
+ENV CC=$MINGW32-gcc
+ENV CXX=$MINGW32-g++
+ENV AR=$MINGW32-ar
+ENV RANLIB=$MINGW32-ranlib
+ENV STRIP=$MINGW32-strip
+ENV LD=$MINGW32-ld
 
-ENV OBJDUMP $MINGW32-objdump
-ENV AS $MINGW32-as
-ENV NM $MINGW32-nm
+ENV OBJDUMP=$MINGW32-objdump
+ENV AS=$MINGW32-as
+ENV NM=$MINGW32-nm
 
 
 ENV SRC=/opt/_src/
@@ -51,7 +51,7 @@ RUN yum install -y libxslt docbook-style-xsl \
 \
     && mkdir -p $SRC/mkvtoolnix && cd $SRC \
 \
-    && curl -L -O https://mkvtoolnix.download/sources/mkvtoolnix-${MKVTOOLNIX_VER}.tar.xz \
+    && curl -L -O https://distfiles.macports.org/mkvtoolnix/mkvtoolnix-${MKVTOOLNIX_VER}.tar.xz \
 \
     && tar Jxvf mkvtoolnix-${MKVTOOLNIX_VER}.tar.xz -C mkvtoolnix --strip-components=1
 
@@ -70,9 +70,9 @@ ARG LDFLAGS="-m32 -march=i686 -fstack-protector-strong -fpie -Wl,-pie -Wl,--dyna
 ARG WINDRES_FLAGS="-F pe-i386"
 ARG DLLTOOL_FLAGS="-m i386"
 
-ENV WINDRES "${MINGW32}-windres ${WINDRES_FLAGS}"
-ENV RC $WINDRES
-ENV DLLTOOL "${MINGW32}-dlltool ${DLLTOOL_FLAGS}"
+ENV WINDRES="${MINGW32}-windres ${WINDRES_FLAGS}"
+ENV RC=$WINDRES
+ENV DLLTOOL="${MINGW32}-dlltool ${DLLTOOL_FLAGS}"
 
 
 ARG MINGW32_SEARCH_PATH=/opt/mingw32/$HOST
@@ -131,9 +131,9 @@ ARG LDFLAGS="-m64 -fstack-protector-strong -fpie -Wl,-pie -Wl,--dynamicbase -Wl,
 ARG WINDRES_FLAGS="-F pe-x86-64"
 ARG DLLTOOL_FLAGS="-m i386:x86-64"
 
-ENV WINDRES "${MINGW32}-windres ${WINDRES_FLAGS}"
-ENV RC $WINDRES
-ENV DLLTOOL "${MINGW32}-dlltool ${DLLTOOL_FLAGS}"
+ENV WINDRES="${MINGW32}-windres ${WINDRES_FLAGS}"
+ENV RC=$WINDRES
+ENV DLLTOOL="${MINGW32}-dlltool ${DLLTOOL_FLAGS}"
 
 
 ARG MINGW32_SEARCH_PATH=/opt/mingw32/$HOST
