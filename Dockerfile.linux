@@ -98,7 +98,7 @@ ARG HOST=i686-unknown-linux-gnu
 #ARG HOST=i686-w64-mingw32
 #ARG HOST=x86_64-w64-mingw32
 
-ARG CFLAGS="-m32 -fstack-protector-strong  -std=gnu17  -Wno-error=implicit-function-declaration -Wno-error=incompatible-pointer-types -Wno-error=int-conversion -Wno-error=return-mismatch"
+ARG CFLAGS="-m32 -fstack-protector-strong  -std=gnu17  -fpermissive"
 ARG CXXFLAGS="-m32 -fstack-protector-strong"
 ARG CPPFLAGS="-D_FILE_OFFSET_BITS=64 -DPCRE2_STATIC"
 ARG LDFLAGS="-m32 -fstack-protector-strong"
@@ -258,7 +258,7 @@ ARG HOST=x86_64-unknown-linux-gnu
 #ARG HOST=i686-w64-mingw32
 #ARG HOST=x86_64-w64-mingw32
 
-ARG CFLAGS="-m64 -fstack-protector-strong  -std=gnu17  -Wno-error=implicit-function-declaration -Wno-error=incompatible-pointer-types -Wno-error=int-conversion -Wno-error=return-mismatch"
+ARG CFLAGS="-m64 -fstack-protector-strong  -std=gnu17  -fpermissive"
 ARG CXXFLAGS="-m64 -fstack-protector-strong"
 ARG CPPFLAGS="-D_FILE_OFFSET_BITS=64 -DPCRE2_STATIC"
 ARG LDFLAGS="-m64 -fstack-protector-strong"
